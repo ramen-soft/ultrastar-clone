@@ -77,8 +77,6 @@ declare module '@tanstack/react-router' {
       path: '/sing/$songId'
       fullPath: '/sing/$songId'
       preLoaderRoute: typeof SingSongIdImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
