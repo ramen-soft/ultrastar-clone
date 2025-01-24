@@ -17,11 +17,18 @@ import { Route as SingSongIdImport } from './routes/sing/$songId'
 
 // Create Virtual Routes
 
+const TestLazyImport = createFileRoute('/test')()
 const SongsLazyImport = createFileRoute('/songs')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const TestLazyRoute = TestLazyImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/test.lazy').then((d) => d.Route))
 
 const SongsLazyRoute = SongsLazyImport.update({
   id: '/songs',
@@ -72,11 +79,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SongsLazyImport
       parentRoute: typeof rootRoute
     }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/sing/$songId': {
       id: '/sing/$songId'
       path: '/sing/$songId'
       fullPath: '/sing/$songId'
       preLoaderRoute: typeof SingSongIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -86,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/songs': typeof SongsLazyRoute
+  '/test': typeof TestLazyRoute
   '/sing/$songId': typeof SingSongIdRoute
 }
 
@@ -93,6 +110,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/songs': typeof SongsLazyRoute
+  '/test': typeof TestLazyRoute
   '/sing/$songId': typeof SingSongIdRoute
 }
 
@@ -101,15 +119,16 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/songs': typeof SongsLazyRoute
+  '/test': typeof TestLazyRoute
   '/sing/$songId': typeof SingSongIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/songs' | '/sing/$songId'
+  fullPaths: '/' | '/about' | '/songs' | '/test' | '/sing/$songId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/songs' | '/sing/$songId'
-  id: '__root__' | '/' | '/about' | '/songs' | '/sing/$songId'
+  to: '/' | '/about' | '/songs' | '/test' | '/sing/$songId'
+  id: '__root__' | '/' | '/about' | '/songs' | '/test' | '/sing/$songId'
   fileRoutesById: FileRoutesById
 }
 
@@ -117,6 +136,7 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutLazyRoute: typeof AboutLazyRoute
   SongsLazyRoute: typeof SongsLazyRoute
+  TestLazyRoute: typeof TestLazyRoute
   SingSongIdRoute: typeof SingSongIdRoute
 }
 
@@ -124,6 +144,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutLazyRoute: AboutLazyRoute,
   SongsLazyRoute: SongsLazyRoute,
+  TestLazyRoute: TestLazyRoute,
   SingSongIdRoute: SingSongIdRoute,
 }
 
@@ -140,6 +161,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/songs",
+        "/test",
         "/sing/$songId"
       ]
     },
@@ -151,6 +173,9 @@ export const routeTree = rootRoute
     },
     "/songs": {
       "filePath": "songs.lazy.tsx"
+    },
+    "/test": {
+      "filePath": "test.lazy.tsx"
     },
     "/sing/$songId": {
       "filePath": "sing/$songId.tsx"
