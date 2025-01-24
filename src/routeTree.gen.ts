@@ -13,20 +13,21 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SingSongIdImport } from './routes/sing/$songId'
 
 // Create Virtual Routes
 
-const TestLazyImport = createFileRoute('/test')()
+const SongsLazyImport = createFileRoute('/songs')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const TestLazyRoute = TestLazyImport.update({
-  id: '/test',
-  path: '/test',
+const SongsLazyRoute = SongsLazyImport.update({
+  id: '/songs',
+  path: '/songs',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/test.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/songs.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   id: '/about',
@@ -39,6 +40,12 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const SingSongIdRoute = SingSongIdImport.update({
+  id: '/sing/$songId',
+  path: '/sing/$songId',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -58,13 +65,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestLazyImport
+    '/songs': {
+      id: '/songs'
+      path: '/songs'
+      fullPath: '/songs'
+      preLoaderRoute: typeof SongsLazyImport
       parentRoute: typeof rootRoute
     }
+    '/sing/$songId': {
+      id: '/sing/$songId'
+      path: '/sing/$songId'
+      fullPath: '/sing/$songId'
+      preLoaderRoute: typeof SingSongIdImport
   }
 }
 
@@ -73,41 +85,46 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
-  '/test': typeof TestLazyRoute
+  '/songs': typeof SongsLazyRoute
+  '/sing/$songId': typeof SingSongIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
-  '/test': typeof TestLazyRoute
+  '/songs': typeof SongsLazyRoute
+  '/sing/$songId': typeof SingSongIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
-  '/test': typeof TestLazyRoute
+  '/songs': typeof SongsLazyRoute
+  '/sing/$songId': typeof SingSongIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/test'
+  fullPaths: '/' | '/about' | '/songs' | '/sing/$songId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/test'
-  id: '__root__' | '/' | '/about' | '/test'
+  to: '/' | '/about' | '/songs' | '/sing/$songId'
+  id: '__root__' | '/' | '/about' | '/songs' | '/sing/$songId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutLazyRoute: typeof AboutLazyRoute
-  TestLazyRoute: typeof TestLazyRoute
+  SongsLazyRoute: typeof SongsLazyRoute
+  SingSongIdRoute: typeof SingSongIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutLazyRoute: AboutLazyRoute,
-  TestLazyRoute: TestLazyRoute,
+  SongsLazyRoute: SongsLazyRoute,
+  SingSongIdRoute: SingSongIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -122,7 +139,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/test"
+        "/songs",
+        "/sing/$songId"
       ]
     },
     "/": {
@@ -131,8 +149,11 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.lazy.tsx"
     },
-    "/test": {
-      "filePath": "test.lazy.tsx"
+    "/songs": {
+      "filePath": "songs.lazy.tsx"
+    },
+    "/sing/$songId": {
+      "filePath": "sing/$songId.tsx"
     }
   }
 }

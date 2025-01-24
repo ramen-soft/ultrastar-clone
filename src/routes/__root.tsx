@@ -16,9 +16,9 @@ function RootComponent() {
 				<Link to="/about" className="[&.active]:font-bold">
 					About
 				</Link>
-				<Link to="/test" className="[&.active]:font-bold">
-					Test
-				</Link>
+        <Link to="/songs" className="[&.active]:font-bold">
+          Songs
+        </Link>
 			</div>
 			<hr />
 			<Outlet />
